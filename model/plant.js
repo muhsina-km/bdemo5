@@ -1,13 +1,10 @@
 const mongoose = require("mongoose")
-mongoose.connect("mongodb+srv://bloomingbuds245:bloomingbuds@cluster0.h4nmndz.mongodb.net/test?retryWrites=true&w=majority")
-    .then(() => { console.log("DB connected") })
-    .catch(err => console.log(err));
 
 let pl = mongoose.Schema;
 const plantdetailsschema = new pl({
     plantid: String,
     plantname: String,
-    planttype: String,
+    planttypeid: String,
     color: String,
     size: String,
     price: Number,
