@@ -10,10 +10,7 @@ const plantdetailsschema = new pl({
     price: Number,
     description: String,
     stock: Number,
-    plantphoto:{
-        data : Buffer,
-        contentType:String,
-    },
+    plantphoto: String,
     status:String
 });
 
