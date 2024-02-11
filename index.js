@@ -4,10 +4,8 @@ const cors = require("cors");
 const planttyperouter = require('./routes/Planttyperoute')
 const loginrouter = require('./routes/loginroute')
 const plantDetailsrouter = require('./routes/plantdetailsroute')
+const registerrouter = require('./routes/registerroute')
 const db = require("./Connection/Database")
-
-
-
 
 
 const app = express();
@@ -34,7 +32,9 @@ app.use("/login", loginrouter)
 
 app.use("/plantdetails",plantDetailsrouter)
 
+//REGISTER
 
+app.use("/register", registerrouter)
 
 
 // Assign port

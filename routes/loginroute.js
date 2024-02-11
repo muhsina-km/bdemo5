@@ -1,5 +1,5 @@
 
-const loginmodel = require('../model/login')
+const loginModel = require('../model/login')
 const app = require('express').Router()
 
 app.post('/login', async (request, response) => {
