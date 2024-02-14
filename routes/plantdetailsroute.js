@@ -48,7 +48,7 @@ app.post('/pnew', async (request, response) => {
 
 app.get('/pview', async (request, response) => {
     // try {
-      console.log("djfhj")
+      console.log("hmmm")
         const result=await plantdetailsmodel.aggregate([
             {
                 $lookup: {
