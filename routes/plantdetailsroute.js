@@ -51,6 +51,13 @@ app.get('/pview/:id', async (request, response) => {
     response.json(result);
 });
 
+//for fetching plant from specific plant type
+app.get('/ptview/:id', async (request, response) => {
+    const id = request.params.id;
+    const result = await plantdetailsmodel.find({ planttypeid: id });
+    response.json(result);
+});
+
 //for retrieving plant data
 
 app.get('/pview/', async (request, response) => {
