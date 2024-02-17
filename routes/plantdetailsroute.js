@@ -1,6 +1,7 @@
 
 const multer = require('multer');
 const plantdetailsmodel = require('../model/plant');
+const { identifyPlant } = require('../functions/aiPlant');
 const app = require('express').Router()
 const cloudinary = require('cloudinary').v2;
 
@@ -43,10 +44,16 @@ app.post('/pnew', async (request, response) => {
 
 });
 
+// retrive a specific plant's details from it's id
+app.get('/pview/:id', async (request, response) => {
+    const id = request.params.id;
+    const result = await plantdetailsmodel.find({ plantid: id });
+    response.json(result);
+});
 
 //for retrieving plant data
 
-app.get('/pview', async (request, response) => {
+app.get('/pview/', async (request, response) => {
     // try {
       console.log("djfhj")
         const result=await plantdetailsmodel.aggregate([
@@ -88,18 +95,38 @@ app.put('/pedit/:id', async (request, response) => {
   });
   
 
-
-app.post('/uploadimg', upload.single('image'), (req, res) => {
-    cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
-      if (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to upload image to Cloudinary' });
-      } else {
-        console.log(result);
-        res.json({ imageUrl: result.secure_url });
-      }
-    }).end(req.file.buffer);
+  app.post('/imgdetails', async (request, response) => {
+    try {
+      const imageUrl = request.body.url;
+      console.log(imageUrl);
+      const result = await identifyPlant(`${imageUrl}`);
+      response.json(result);
+    } catch (error) {
+      // console.error('Error:', error);
+      response.status(500).json({ error: error.message });
+    }
   });
+
+  app.post('/uploadimg', upload.single('image'), async (req, res) => {
+    try {
+      const cloudinaryResult = await new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
+          if (error) {
+            console.error(error);
+            reject('Failed to upload image to Cloudinary');
+          } else {
+            console.log(result);
+            resolve(result);
+          }
+        }).end(req.file.buffer);
+      });
+      res.json({ imageUrl: cloudinaryResult.secure_url });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+  
 
 
 // get platdetails from id
