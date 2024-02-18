@@ -51,6 +51,22 @@ app.get('/pview/:id', async (request, response) => {
     response.json(result);
 });
 
+// for searching and retrieving plant details from a query string
+app.get('/searchplants/:query', async (request, response) => {
+  const query = request.params.query; // Access the route parameter correctly
+  try {
+      const result = await plantdetailsmodel
+          .find({plantname: {$regex: query, $options: 'i'}})
+          .limit(10)
+          .select('-_id'); // Exclude _id field, you can include/exclude fields as needed
+      response.json(result);
+  } catch (error) {
+      response.status(500).json({ message: error.message });
+  }
+});
+
+
+
 //for fetching plant from specific plant type
 app.get('/ptview/:id', async (request, response) => {
     const id = request.params.id;
