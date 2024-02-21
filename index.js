@@ -5,6 +5,7 @@ const planttyperouter = require('./routes/Planttyperoute')
 const loginrouter = require('./routes/loginroute')
 const plantDetailsrouter = require('./routes/plantdetailsroute')
 const registerrouter = require('./routes/registerroute')
+const cartrouter = require('./routes/cartroute')
 const db = require("./Connection/Database")
 
 
@@ -35,6 +36,10 @@ app.use("/plantdetails",plantDetailsrouter)
 //REGISTER
 
 app.use("/register", registerrouter)
+
+//CART
+
+app.use("/cart", cartrouter)
 
 
 // Assign port
