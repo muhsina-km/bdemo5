@@ -3,13 +3,13 @@ const app = require('express').Router()
 
 // API endpoint to save items to the cart
 app.post('/add-to-cart', async (req, res) => {
-    const { userId, productId, quantity } = req.body;
+    const { email, productId, quantity } = req.body;
   
     try {
-      let cart = await Cart.findOne({ userId });
+      let cart = await Cart.findOne({ email });
   
       if (!cart) {
-        cart = new Cart({ userId, items: [] });
+        cart = new Cart({ email, items: [] });
       }
   
       // Check if the product is already in the cart
