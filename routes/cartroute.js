@@ -1,6 +1,7 @@
 const Cart = require('../model/cart')
 const app = require('express').Router()
 const express = require('express');
+const plantdetailsmodel = require('../model/plant');
 
 
 app.use(express.json());
@@ -9,47 +10,72 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // API endpoint to save items to the cart
 app.post('/add-to-cart', async (req, res) => {
-    const { email, productId, quantity } = req.body;
-  
-    try {
-      let cart = await Cart.findOne({ email });
-  
-      if (!cart) {
-        cart = new Cart({ email, items: [] });
-      }
-  
-      // Check if the product is already in the cart
-      const existingItem = cart.items.find((item) => item.productId === productId);
-  
-      if (existingItem) {
-        existingItem.quantity += quantity;
-      } else {
-        cart.items.push({ productId, quantity });
-      }
-  
-      await cart.save();
-      res.status(200).json({ message: 'Item added to cart successfully' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Internal server error' });
-    }
-  });
+  const { email, productId, quantity } = req.body;
 
-  app.get('/view-cart', async (req, res) => {
-    const { email } = req.query; // Access email from query parameters instead of body
-  
-    try {
-        const cart = await Cart.findOne({ email });
-  
-        if (!cart) {
-            return res.status(404).json({ message: 'Cart not found for this user' });
-        }
-  
-        res.status(200).json({ cart });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+  try {
+    let cart = await Cart.findOne({ email });
+
+    if (!cart) {
+      cart = new Cart({ email, items: [] });
     }
+
+    // Check if the product is already in the cart
+    const existingItem = cart.items.find((item) => item.productId === productId);
+
+    if (existingItem) {
+      existingItem.quantity += quantity;
+    } else {
+      cart.items.push({ productId, quantity });
+    }
+
+    await cart.save();
+    res.status(200).json({ message: 'Item added to cart successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+app.get('/calculate-total-price', async (req, res) => {
+  const { email } = req.query;
+  try {
+    const cart = await Cart.findOne({ email });
+
+    if (!cart) {
+      return res.status(404).json({ message: 'Cart not found for this user' });
+    }
+
+    let totalPrice = 0;
+    for (const item of cart.items) {
+      const product = await plantdetailsmodel.findOne({ plantid: item.productId });
+      if (product) {
+        totalPrice += product.price * item.quantity;
+      }
+    }
+
+    res.status(200).json({ totalPrice });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
+app.get('/view-cart', async (req, res) => {
+  const { email } = req.query; // Access email from query parameters instead of body
+
+  try {
+    const cart = await Cart.findOne({ email });
+
+    if (!cart) {
+      return res.status(404).json({ message: 'Cart not found for this user' });
+    }
+
+    res.status(200).json({ cart });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
 
 
