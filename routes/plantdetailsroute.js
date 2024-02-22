@@ -65,6 +65,23 @@ app.get('/searchplants/:query', async (request, response) => {
   }
 });
 
+// Endpoint to get plant details by category
+app.get('/products/:category', async (req, res) => {
+  const category = req.params.category;
+
+  try {
+    const result = await plantdetailsmodel
+    .find({plantname: {$regex: category, $options: 'i'}});
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'No results found' });
+    }
+
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 
 //for fetching plant from specific plant type
