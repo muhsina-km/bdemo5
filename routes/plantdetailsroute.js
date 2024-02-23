@@ -2,6 +2,7 @@
 const multer = require('multer');
 const plantdetailsmodel = require('../model/plant');
 const { identifyPlant } = require('../functions/aiPlant');
+const plantmodel = require('../model/planttype');
 const app = require('express').Router()
 const cloudinary = require('cloudinary').v2;
 
@@ -69,8 +70,10 @@ app.get('/searchplants/:query', async (request, response) => {
 app.get('/products/:category', async (req, res) => {
   const category = req.params.category;
   try {
+    const ptype = await plantmodel.findOne({ Planttype: category });
+    console.log(ptype)
     const result = await plantdetailsmodel
-    .find({plantname: {$regex: category, $options: 'i'}});
+    .find({planttypeid: ptype._id});
     if (result.length === 0) {
       return res.status(404).json({ message: 'No results found' });
     }

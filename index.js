@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 
 const planttyperouter = require('./routes/Planttyperoute')
+const wishrouter = require('./routes/wishroutes')
 const loginrouter = require('./routes/loginroute')
 const plantDetailsrouter = require('./routes/plantdetailsroute')
 const registerrouter = require('./routes/registerroute')
@@ -41,7 +42,9 @@ app.use("/register", registerrouter)
 
 app.use("/cart", cartrouter)
 
+// WishList
 
+app.use("/wishlist", wishrouter)
 // Assign port
 app.listen(4005, () => {
     console.log("Port is running on 4005");
