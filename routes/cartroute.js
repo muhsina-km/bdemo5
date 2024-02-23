@@ -65,18 +65,34 @@ app.get('/view-cart', async (req, res) => {
   const { email } = req.query; // Access email from query parameters instead of body
 
   try {
-    const cart = await Cart.findOne({ email });
+      const cart = await Cart.findOne({ email });
+      if (!cart) {
+          return res.status(404).json({ message: 'Cart not found for this user' });
+      }
 
-    if (!cart) {
-      return res.status(404).json({ message: 'Cart not found for this user' });
-    }
+      // Extracting productIds from the cart
+      const productIds = cart.items.map(item => item.productId);
 
-    res.status(200).json({ cart });
+      // Fetching details of products from the Plant collection
+      const products = await plantdetailsmodel.find({ plantid: { $in: productIds } });
+
+      // Merging cart items with product details
+      const mergedCart = cart.items.map(item => {
+          const product = products.find(product => product.plantid === item.productId);
+          return {
+              productId: item.productId,
+              quantity: item.quantity,
+              ...product.toObject() // Merge product details into the cart item
+          };
+      });
+
+      res.status(200).json({ cart: mergedCart });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 
 
 module.exports = app
