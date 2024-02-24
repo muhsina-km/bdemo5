@@ -8,7 +8,6 @@ const plantDetailsrouter = require('./routes/plantdetailsroute')
 const registerrouter = require('./routes/registerroute')
 const cartrouter = require('./routes/cartroute')
 const orderrouter = require('./routes/orderroute')
-const locationrouter = require('./routes/locationroute')
 const db = require("./Connection/Database")
 
 
@@ -51,10 +50,6 @@ app.use("/wishlist", wishrouter)
 //Order 
 
 app.use("/order", orderrouter)
-
-//Location
-
-app.use("/location", locationrouter)
 
 // Assign port
 app.listen(4005, () => {
