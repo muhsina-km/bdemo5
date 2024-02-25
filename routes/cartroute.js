@@ -36,6 +36,8 @@ app.post('/add-to-cart', async (req, res) => {
   }
 });
 
+
+//FIND TOTAL
 app.get('/calculate-total-price', async (req, res) => {
   const { email } = req.query;
   try {
@@ -61,6 +63,7 @@ app.get('/calculate-total-price', async (req, res) => {
 });
 
 
+//VIEW CART
 app.get('/view-cart', async (req, res) => {
   const { email } = req.query; // Access email from query parameters instead of body
 
@@ -93,6 +96,29 @@ app.get('/view-cart', async (req, res) => {
   }
 });
 
+
+//remove an item from the cart
+app.post('/remove-from-cart', async (req, res) => {
+  const { email, productId } = req.body;
+    console.log('Received request to remove item from cart:', {email, productId});
+  try {
+    const cart = await Cart.findOne({ email });
+
+    if (!cart) {
+      return res.status(404).json({ message: 'Cart not found for this user' });
+    }
+
+    // Filter out the item to be removed
+    cart.items = cart.items.filter(item => item.productId !== productId);
+
+    await cart.save();
+
+    res.status(200).json({ message: 'Item removed from cart successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 
 module.exports = app
