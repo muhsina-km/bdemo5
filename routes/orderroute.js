@@ -29,7 +29,7 @@ router.get('/fetch-orders', async (req, res) => {
 router.delete('/remove-order/:orderId', async (req, res) => {
     const { orderId } = req.params;
     try {
-        const deletedOrder = await Order.findByIdAndRemove(orderId);
+        const deletedOrder = await Order.findByIdAndDelete(orderId);
         if (deletedOrder) {
             res.status(200).json({ message: 'Order removed successfully' });
         } else {
@@ -37,7 +37,7 @@ router.delete('/remove-order/:orderId', async (req, res) => {
         }
     } catch (error) {
         console.error('Error removing order:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error', details:error.message });
     }
 });
 
