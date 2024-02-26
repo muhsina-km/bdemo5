@@ -13,6 +13,10 @@ app.post('/add-to-cart', async (req, res) => {
   const { email, productId, quantity } = req.body;
 
   try {
+    if(!email || !productId || !quantity || isNaN(quantity)) {
+      return res.status(400).json({ message: 'Invalid request body' });
+    }
+
     let cart = await Cart.findOne({ email });
 
     if (!cart) {
@@ -23,9 +27,9 @@ app.post('/add-to-cart', async (req, res) => {
     const existingItem = cart.items.find((item) => item.productId === productId);
 
     if (existingItem) {
-      existingItem.quantity += quantity;
+      existingItem.quantity += parseInt(quantity);
     } else {
-      cart.items.push({ productId, quantity });
+      cart.items.push({ productId, quantity: parseInt(quantity) });
     }
 
     await cart.save();
@@ -100,7 +104,7 @@ app.get('/view-cart', async (req, res) => {
 //remove an item from the cart
 app.post('/remove-from-cart', async (req, res) => {
   const { email, productId } = req.body;
-    console.log('Received request to remove item from cart:', {email, productId});
+    // console.log('Received request to remove item from cart:', {email, productId});
   try {
     const cart = await Cart.findOne({ email });
 
