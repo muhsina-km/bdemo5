@@ -8,6 +8,10 @@ const orderSchema = new mongoose.Schema({
     place: String,
     district: String, 
     payment: String,
+    status: {
+        type: String,
+        default: "ORDERING"
+    },
     items: [{
         productId: String,
         quantity: Number,

@@ -14,6 +14,24 @@ router.post('/place-order', async (req, res) => {
     }
 });
 
+// Order Status
+router.patch('/update-order-status/:orderId', async (req, res) => {
+    const { orderId } = req.params;
+    const { status } = req.body; // Expecting status in the request body
+
+    try {
+        const updatedOrder = await Order.findByIdAndUpdate(orderId, { status }, { new: true });
+        if (updatedOrder) {
+            res.status(200).json({ message: 'Order status updated successfully', order: updatedOrder });
+        } else {
+            res.status(404).json({ message: 'Order not found' });
+        }
+    } catch (error) {
+        console.error('Error updating order status:', error);
+        res.status(500).json({ error: 'Internal server error', details: error.message });
+    }
+});
+
 // Fetch Orders
 router.get('/fetch-orders', async (req, res) => {
     try {
