@@ -15,6 +15,9 @@ const orderSchema = new mongoose.Schema({
     items: [{
         productId: String,
         quantity: Number,
+        price: Number,
+        plantname: String,
+        plantphoto: String
     }],       
 });
 
