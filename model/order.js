@@ -8,6 +8,7 @@ const orderSchema = new mongoose.Schema({
     place: String,
     district: String, 
     payment: String,
+    orderDate: { type: Date, default: Date.now },
     status: {
         type: String,
         default: "ORDERING"
