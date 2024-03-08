@@ -109,18 +109,13 @@ app.get('/pview/', async (request, response) => {
         ]);
 
 response.send(result)
-
-    // } catch(error) {
-    //     console.error("Error in /pview:",error);
-    //     response.status(500).json({error:"Internal error"})
-    // }
 });
 
 //for update status of plant-delete 
 
 app.put('/updatestatus/:id',async(request,response)=>{
     let id=request.params.id
-    await plantdetailsmodel.findByIdAndUpdate(id, { $set:{status:"INACTIVE"} });
+    await plantdetailsmodel.findByIdAndUpdate(id, { $set:{status:"UNAVAILABLE"} });
     response.send("Record Deleted")
 })
 

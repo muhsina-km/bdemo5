@@ -14,7 +14,7 @@ app.get('/ptview', async (request, response) => {
 
 app.put('/ptupdatestatus/:id', async (request, response) => {
     let id = request.params.id
-    await plantmodel.findByIdAndUpdate(id, { $set: { Status: "INACTIVE" } })
+    await plantmodel.findByIdAndUpdate(id, { $set: { Status: "UNAVAILABLE" } })
     response.send("Record Deleted")
 })
 

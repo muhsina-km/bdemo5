@@ -1,6 +1,6 @@
 const mongoose =require("mongoose")
 
-mongoose.connect("mongodb+srv://bloomingbuds245:bloomingbuds@cluster0.h4nmndz.mongodb.net/test?retryWrites=true&w=majority",
+mongoose.connect("mongodb+srv://bloomingbuds245:bloomingbuds@cluster0.h4nmndz.mongodb.net/plant?retryWrites=true&w=majority",
 {
     useNewUrlParser: true,
     useUnifiedTopology: true
