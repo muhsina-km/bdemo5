@@ -1,3 +1,4 @@
+const Cart = require("../model/cart");
 const Order = require("../model/order");
 const express = require('express');
 const router = express.Router();

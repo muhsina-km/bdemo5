@@ -124,5 +124,17 @@ app.post('/remove-from-cart', async (req, res) => {
   }
 });
 
+// Clear cart
+app.post('/clear-cart', async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const result = await Cart.findOneAndDelete({ email });
+    res.status(200).json({ message: 'Cart cleared successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 module.exports = app
