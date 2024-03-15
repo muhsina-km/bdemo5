@@ -115,7 +115,7 @@ response.send(result)
 
 app.put('/updatestatus/:id',async(request,response)=>{
     let id=request.params.id
-    await plantdetailsmodel.findByIdAndUpdate(id, { $set:{status:"UNAVAILABLE"} });
+    await plantdetailsmodel.findByIdAndUpdate(id, { $set:{status:"INACTIVE"} });
     response.send("Record Deleted")
 })
 
