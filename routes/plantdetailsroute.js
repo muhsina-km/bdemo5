@@ -47,9 +47,9 @@ app.post('/pnew', async (request, response) => {
 
 // retrive a specific plant's details from it's id
 app.get('/pview/:id', async (request, response) => {
-    const id = request.params.id;
-    const result = await plantdetailsmodel.find({ plantid: id });
-    response.json(result);
+  const id = request.params.id;
+  const result = await plantdetailsmodel.find({ plantid: id });
+  response.json(result);
 });
 
 // for searching and retrieving plant details from a query string
