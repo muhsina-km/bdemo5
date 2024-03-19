@@ -84,7 +84,6 @@ app.get('/products/:category', async (req, res) => {
   }
 });
 
-
 //for fetching plant from specific plant type
 app.get('/ptview/:id', async (request, response) => {
     const id = request.params.id;
@@ -93,23 +92,6 @@ app.get('/ptview/:id', async (request, response) => {
 });
 
 //for retrieving plant data
-
-// app.get('/pview/', async (request, response) => {
-//       console.log("hmmm")
-//         const result=await plantdetailsmodel.aggregate([
-//             {
-//                 $lookup: {
-//                     from: 'planttypes',
-//                     localField: 'planttypeid',
-//                     foreignField: '_id',
-//                     as: 'types',
-//                 },
-//             },
-//         ]);
-
-// response.send(result)
-// });
-
 // Endpoint to retrieve active products for users
 app.get('/pview/', async (request, response) => {
   try {
