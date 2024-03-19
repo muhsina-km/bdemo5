@@ -48,7 +48,7 @@ app.post('/pnew', async (request, response) => {
 // retrive a specific plant's details from it's id
 app.get('/pview/:id', async (request, response) => {
   const id = request.params.id;
-  const result = await plantdetailsmodel.find({ plantid: id });
+  const result = await plantdetailsmodel.find({ plantid: id, status: 'ACTIVE'});
   response.json(result);
 });
 
@@ -57,7 +57,7 @@ app.get('/searchplants/:query', async (request, response) => {
   const query = request.params.query; // Access the route parameter correctly
   try {
       const result = await plantdetailsmodel
-          .find({plantname: {$regex: query, $options: 'i'}})
+          .find({plantname: {$regex: query, $options: 'i'}, status: 'ACTIVE'})
           .limit(10)
           .select('-_id'); // Exclude _id field, you can include/exclude fields as needed
       response.json(result);
@@ -73,7 +73,7 @@ app.get('/products/:category', async (req, res) => {
     const ptype = await plantmodel.findOne({ Planttype: category });
     console.log(ptype)
     const result = await plantdetailsmodel
-    .find({planttypeid: ptype._id});
+    .find({planttypeid: ptype._id, status: 'ACTIVE' });
     if (result.length === 0) {
       return res.status(404).json({ message: 'No results found' });
     }
@@ -88,28 +88,71 @@ app.get('/products/:category', async (req, res) => {
 //for fetching plant from specific plant type
 app.get('/ptview/:id', async (request, response) => {
     const id = request.params.id;
-    const result = await plantdetailsmodel.find({ planttypeid: id });
+    const result = await plantdetailsmodel.find({ planttypeid: id, status: 'ACTIVE' });
     response.json(result);
 });
 
 //for retrieving plant data
 
-app.get('/pview/', async (request, response) => {
-    // try {
-      console.log("hmmm")
-        const result=await plantdetailsmodel.aggregate([
-            {
-                $lookup: {
-                    from: 'planttypes',
-                    localField: 'planttypeid',
-                    foreignField: '_id',
-                    as: 'types',
-                },
-            },
-        ]);
+// app.get('/pview/', async (request, response) => {
+//       console.log("hmmm")
+//         const result=await plantdetailsmodel.aggregate([
+//             {
+//                 $lookup: {
+//                     from: 'planttypes',
+//                     localField: 'planttypeid',
+//                     foreignField: '_id',
+//                     as: 'types',
+//                 },
+//             },
+//         ]);
 
-response.send(result)
+// response.send(result)
+// });
+
+// Endpoint to retrieve active products for users
+app.get('/pview/', async (request, response) => {
+  try {
+      const result = await plantdetailsmodel.aggregate([
+          {
+              $match: { status: 'ACTIVE' },
+          },
+          {
+              $lookup: {
+                  from: 'planttypes',
+                  localField: 'planttypeid',
+                  foreignField: '_id',
+                  as: 'types',
+              },
+          },
+      ]);
+      response.send(result);
+  } catch (error) {
+      console.error("Error retrieving active products:", error);
+      response.status(500).json({ error: "Internal Server Error" });
+  }
 });
+
+// Endpoint to retrieve all products for admins
+app.get('/admin/pview/', async (request, response) => {
+  try {
+      const result = await plantdetailsmodel.aggregate([
+          {
+              $lookup: {
+                  from: 'planttypes',
+                  localField: 'planttypeid',
+                  foreignField: '_id',
+                  as: 'types',
+              },
+          },
+      ]);
+      response.send(result);
+  } catch (error) {
+      console.error("Error retrieving all products:", error);
+      response.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 
 //for update status of plant-delete 
 
