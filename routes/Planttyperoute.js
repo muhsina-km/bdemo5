@@ -6,9 +6,13 @@ app.post('/ptnew', (request, response) => {
     response.send("Success")
 })
 
+app.get('/admin/ptview', async (request, response) => {
+    var data = await plantmodel.find();
+    response.send(data)
+})
 
 app.get('/ptview', async (request, response) => {
-    var data = await plantmodel.find();
+    var data = await plantmodel.find({ Status: "ACTIVE" });
     response.send(data)
 })
 
