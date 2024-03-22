@@ -5,9 +5,11 @@ const router = express.Router();
 
 // Place Order
 router.post('/place-order', async (req, res) => {
+    const { email } = req.body;
     try {
         const newOrder = new Order(req.body);
         const savedOrder = await newOrder.save();
+        const deletedCart = await Cart.findOneAndDelete({ email });
         res.status(201).json({ message: 'Order placed successfully', orderId: savedOrder._id });
     } catch (error) {
         console.error('Error saving order:', error);

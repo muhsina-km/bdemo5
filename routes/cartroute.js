@@ -70,7 +70,6 @@ app.get('/calculate-total-price', async (req, res) => {
 //VIEW CART
 app.get('/view-cart', async (req, res) => {
   const { email } = req.query; // Access email from query parameters instead of body
-
   try {
       const cart = await Cart.findOne({ email });
       if (!cart) {
