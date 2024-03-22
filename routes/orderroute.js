@@ -1,6 +1,7 @@
 const Cart = require("../model/cart");
 const Order = require("../model/order");
 const express = require('express');
+const plantdetailsmodel = require("../model/plant");
 const router = express.Router();
 
 // Place Order
@@ -18,13 +19,46 @@ router.post('/place-order', async (req, res) => {
 });
 
 // Order Status
+// router.patch('/update-order-status/:orderId', async (req, res) => {
+//     const { orderId } = req.params;
+//     const { status } = req.body; // Expecting status in the request body
+
+//     try {
+//         const updatedOrder = await Order.findByIdAndUpdate(orderId, { status }, { new: true });
+//         if (updatedOrder) {
+//             res.status(200).json({ message: 'Order status updated successfully', order: updatedOrder });
+//         } else {
+//             res.status(404).json({ message: 'Order not found' });
+//         }
+//     } catch (error) {
+//         console.error('Error updating order status:', error);
+//         res.status(500).json({ error: 'Internal server error', details: error.message });
+//     }
+// });
+
 router.patch('/update-order-status/:orderId', async (req, res) => {
     const { orderId } = req.params;
     const { status } = req.body; // Expecting status in the request body
 
     try {
+        // Update order status
         const updatedOrder = await Order.findByIdAndUpdate(orderId, { status }, { new: true });
+        
         if (updatedOrder) {
+            // Retrieve items from the updated order
+            const { items } = updatedOrder;
+
+            // Iterate over each item and update stock
+            for (const item of items) {
+                const product = await plantdetailsmodel.findOne({ plantid: item.productId });
+                if (product) {
+                    // Subtract ordered quantity from stock
+                    const newStock = product.stock - item.quantity;
+                    // Update stock of the product
+                    await plantdetailsmodel.findOneAndUpdate({ plantid: item.productId }, { stock: newStock });
+                }
+            }
+
             res.status(200).json({ message: 'Order status updated successfully', order: updatedOrder });
         } else {
             res.status(404).json({ message: 'Order not found' });
