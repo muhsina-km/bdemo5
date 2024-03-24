@@ -69,10 +69,26 @@ router.patch('/update-order-status/:orderId', async (req, res) => {
     }
 });
 
+// Fetch Orders admin
+// Fetch Orders
+router.get('/fetch-orders/admin', async (req, res) => {
+    try {
+        const orders = await Order.find();
+        res.status(200).json({ orders });
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Fetch Orders
 router.get('/fetch-orders', async (req, res) => {
     try {
-        const orders = await Order.find();
+        const userEmail = req.query.email;
+        if (!userEmail) {
+            return res.status(400).json({ error: 'Email is missing' });
+        }
+        const orders = await Order.find({ email: userEmail });
         res.status(200).json({ orders });
     } catch (error) {
         console.error('Error fetching orders:', error);
